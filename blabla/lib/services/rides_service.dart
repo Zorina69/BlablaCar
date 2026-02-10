@@ -17,7 +17,7 @@ class RidesService {
 
   static List<Ride> filterBySeatRequested(int seatRequested) {
     return availableRides
-        .where((ride) => ride.remainingSeats == (seatRequested))
+        .where((ride) => ride.remainingSeats >= (seatRequested))
         .toList();
   }
 
