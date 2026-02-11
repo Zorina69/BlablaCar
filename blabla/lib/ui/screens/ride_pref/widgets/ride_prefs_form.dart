@@ -37,6 +37,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
   Location? arrival;
   late int requestedSeats;
   Location? location;
+  bool searched = false;
 
   // ----------------------------------
   // Initialize the Form attributes
@@ -45,9 +46,6 @@ class _RidePrefFormState extends State<RidePrefForm> {
   static const defautLocation = "Choose Your Location";
   static final defautDate = DateTime.now();
   static const defautRequestedSeats = 1;
-
-  List<Ride> get filteredRide =>
-      RidesService.filterBy(departure: departure, seatRequested: requestedSeats);
 
   @override
   void initState() {
@@ -85,7 +83,6 @@ class _RidePrefFormState extends State<RidePrefForm> {
     }
   }
 
-
   Future<void> chooseArrival() async {
     final Location? selected = await Navigator.push<Location>(
       context,
@@ -106,11 +103,13 @@ class _RidePrefFormState extends State<RidePrefForm> {
       context,
       MaterialPageRoute(builder: (context) => SeatAmountScreen()),
     );
-  }  
+  }
 
   void search() {
-    final rides = filteredRide;
-    print(rides);
+    setState(() {
+      searched = true;
+    });
+    
   }
 
   // ----------------------------------
@@ -153,6 +152,16 @@ class _RidePrefFormState extends State<RidePrefForm> {
         ),
 
         BlaButton(color: ColorButton.primary, onTap: search, title: "Search"),
+        if (departure!.name == defautLocation &&
+            arrival!.name == defautLocation && 
+            searched == true)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Please Select the Location",
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
       ],
     );
   }
