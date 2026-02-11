@@ -6,14 +6,14 @@ enum ColorButton { primary, secondary }
 class BlaButton extends StatelessWidget {
   final ColorButton color;
   final VoidCallback onTap;
-  final IconData icon;
+  final IconData? icon;
   final String title;
   const BlaButton({
     super.key,
     required this.color,
     required this.onTap,
-    required this.icon,
-    required this.title,
+    required this.title, 
+    this.icon,
   });
 
 

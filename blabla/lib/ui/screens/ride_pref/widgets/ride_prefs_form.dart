@@ -1,3 +1,10 @@
+import 'package:blabla/model/ride/ride.dart';
+import 'package:blabla/services/rides_service.dart';
+import 'package:blabla/ui/screens/location_picker/location_picker_screen.dart';
+import 'package:blabla/ui/screens/location_picker/seat_amount_screen.dart';
+import 'package:blabla/ui/screens/ride_pref/widgets/formTile.dart';
+import 'package:blabla/ui/widgets/actions/bla_button.dart';
+import 'package:blabla/ui/widgets/inputs/datepicker.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../model/ride/locations.dart';
@@ -11,7 +18,9 @@ import '../../../../model/ride_pref/ride_pref.dart';
 ///   - A number of seats
 ///
 /// The form can be created with an existing RidePref (optional).
-///
+
+enum SelectedColor { neutralDark, neutralLight }
+
 class RidePrefForm extends StatefulWidget {
   // The form can be created with an optional initial RidePref.
   final RidePref? initRidePref;
@@ -27,20 +36,82 @@ class _RidePrefFormState extends State<RidePrefForm> {
   late DateTime departureDate;
   Location? arrival;
   late int requestedSeats;
+  Location? location;
 
   // ----------------------------------
   // Initialize the Form attributes
   // ----------------------------------
 
+  static const defautLocation = "Choose Your Location";
+  static final defautDate = DateTime.now();
+  static const defautRequestedSeats = 1;
+
+  List<Ride> get filteredRide =>
+      RidesService.filterBy(departure: departure, seatRequested: requestedSeats);
+
   @override
   void initState() {
     super.initState();
     // TODO
+    departure = Location(name: defautLocation, country: Country.france);
+    departureDate = defautDate;
+    arrival = Location(name: defautLocation, country: Country.france);
+    requestedSeats = defautRequestedSeats;
   }
 
   // ----------------------------------
   // Handle events
   // ----------------------------------
+  void reverseLocation() {
+    setState(() {
+      location = departure;
+      departure = arrival;
+      arrival = location;
+    });
+  }
+
+  Future<void> chooseDeparture() async {
+    final Location? selected = await Navigator.push<Location>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LocationPickerScreen(selectedLocation: departure),
+      ),
+    );
+
+    if (selected != null) {
+      setState(() {
+        departure = selected;
+      });
+    }
+  }
+
+
+  Future<void> chooseArrival() async {
+    final Location? selected = await Navigator.push<Location>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LocationPickerScreen(selectedLocation: arrival),
+      ),
+    );
+
+    if (selected != null) {
+      setState(() {
+        arrival = selected;
+      });
+    }
+  }
+
+  void chooseSeat() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SeatAmountScreen()),
+    );
+  }  
+
+  void search() {
+    final rides = filteredRide;
+    print(rides);
+  }
 
   // ----------------------------------
   // Compute the widgets rendering
@@ -54,8 +125,35 @@ class _RidePrefFormState extends State<RidePrefForm> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [ 
-        
-        ]);
+      children: [
+        TileCard(
+          icon: Icons.location_city,
+          title: "$departure",
+          trailingButton: Icons.thumbs_up_down_sharp,
+          reverseLocation: reverseLocation,
+          tapAction: chooseDeparture,
+        ),
+        TileCard(
+          icon: Icons.location_city,
+          title: "$arrival",
+          tapAction: chooseArrival,
+        ),
+        DatePickerWidget(
+          initialDate: departureDate,
+          onDateSelected: (date) {
+            setState(() {
+              departureDate = date;
+            });
+          },
+        ),
+        TileCard(
+          icon: Icons.person,
+          title: "$requestedSeats",
+          tapAction: chooseSeat,
+        ),
+
+        BlaButton(color: ColorButton.primary, onTap: search, title: "Search"),
+      ],
+    );
   }
 }

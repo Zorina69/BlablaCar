@@ -25,41 +25,53 @@ class RidePrefsScreen extends StatelessWidget {
   }
 
   Widget _buildForeground() {
-    return Column(
-      children: [
-        // 1 - THE HEADER
-        SizedBox(height: 16),
-        Align(
-          alignment: AlignmentGeometry.center,
-          child: Text(
-            "Your pick of rides at low price",
-            style: BlaTextStyles.heading.copyWith(color: Colors.white),
-          ),
-        ),
-        SizedBox(height: 100),
+  return SafeArea(
+    child: SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 16),
 
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: BlaSpacings.xxl),
-          decoration: BoxDecoration(
-            color: Colors.white, // White background
-            borderRadius: BorderRadius.circular(16), // Rounded corners
+          Align(
+            alignment: Alignment.center,
+            child: Text(
+              "Your pick of rides at low price",
+              style: BlaTextStyles.heading.copyWith(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // 2 - THE FORM
-              RidePrefForm(initRidePref: RidePrefsService.selectedRidePref),
-              SizedBox(height: BlaSpacings.m),
 
-              // 3 - THE HISTORY
-              _buildHistory(),
-            ],
+          const SizedBox(height: 100),
+
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: BlaSpacings.xxl),
+            padding: const EdgeInsets.all(BlaSpacings.m),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                RidePrefForm(
+                  initRidePref: RidePrefsService.selectedRidePref,
+                ),
+
+                const SizedBox(height: BlaSpacings.m),
+
+                _buildHistory(),
+              ],
+            ),
           ),
-        ),
-      ],
-    );
-  }
+
+          const SizedBox(height: 24),
+        ],
+      ),
+    ),
+  );
+
+
+}
+
 
   Widget _buildHistory() {
     return SizedBox(
