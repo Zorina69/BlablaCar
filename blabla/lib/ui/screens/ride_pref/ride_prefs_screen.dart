@@ -55,7 +55,6 @@ class RidePrefsScreen extends StatelessWidget {
                 RidePrefForm(
                   initRidePref: RidePrefsService.selectedRidePref,
                 ),
-
                 const SizedBox(height: BlaSpacings.m),
 
                 _buildHistory(),

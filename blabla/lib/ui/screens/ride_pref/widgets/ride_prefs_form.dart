@@ -108,8 +108,14 @@ class _RidePrefFormState extends State<RidePrefForm> {
   void search() {
     setState(() {
       searched = true;
+
+      List<Ride> filteredRide = RidesService.filterBy(
+        departure: departure,
+        seatRequested: requestedSeats,
+      );
+
+      
     });
-    
   }
 
   // ----------------------------------
@@ -153,7 +159,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
 
         BlaButton(color: ColorButton.primary, onTap: search, title: "Search"),
         if (departure!.name == defautLocation &&
-            arrival!.name == defautLocation && 
+            arrival!.name == defautLocation &&
             searched == true)
           Padding(
             padding: const EdgeInsets.all(8.0),
