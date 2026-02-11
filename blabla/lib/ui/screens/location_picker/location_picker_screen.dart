@@ -54,7 +54,13 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
 
           // Location List
           Expanded(
-            child: ListView.builder(
+            child: filteredLocations.isEmpty? Center(
+                child: Text(
+                  "Location Not Found",
+                  style: TextStyle(fontSize: 16, color: Colors.red),
+                ),
+              )
+            : ListView.builder(
               itemCount: filteredLocations.length,
               itemBuilder: (context, index) {
                 final loc = filteredLocations[index];
